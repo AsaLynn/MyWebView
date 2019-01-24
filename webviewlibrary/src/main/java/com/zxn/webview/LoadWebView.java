@@ -2,18 +2,18 @@ package com.zxn.webview;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.net.http.SslError;
 import android.os.Build;
-import android.support.v7.view.menu.MenuPresenter;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.View;
-import android.webkit.SslErrorHandler;
-import android.webkit.WebChromeClient;
+import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+
+import java.util.Map;
 
 /**
  * Created by zxn on 2018/8/10.
@@ -104,6 +104,8 @@ public class LoadWebView extends WebView {
 
         setWebViewClient(new LoadWebViewClient());
 //        addJavascriptInterface(new JsObject(), "am");
+
+
     }
 
     public void setProgressBarGone() {
@@ -129,5 +131,38 @@ public class LoadWebView extends WebView {
         lp.y = t;
         mProgressBar.setLayoutParams(lp);
         super.onScrollChanged(l, t, oldl, oldt);
+    }
+
+    /**
+     * 设置Cookie
+     *
+     * @param url    接口连接
+     * @param cookie cookie值.
+     */
+    public void setCookie(String url, String cookie) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+        cookieManager.removeSessionCookie();
+        cookieManager.removeAllCookie();
+        cookieManager.setCookie(url, cookie);
+        if (Build.VERSION.SDK_INT < 21) {
+            CookieSyncManager.getInstance().sync();
+        } else {
+            CookieManager.getInstance().flush();
+        }
+    }
+
+    @Override
+    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
+        super.loadUrl(url, additionalHttpHeaders);
+    }
+
+    public void loadUrlWithCookie(String url, Map<String, String> headers, String cookie) {
+        setCookie(url, cookie);
+        super.loadUrl(url, headers);
     }
 }

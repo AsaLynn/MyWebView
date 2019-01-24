@@ -1,6 +1,5 @@
 package com.zxn.webview;
 
-import android.view.View;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 

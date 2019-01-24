@@ -38,9 +38,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @OnClick({R.id.bt_baidu, R.id.bt_upload_photo, R.id.bt_movie, R.id.bt_movie_full, R.id.bt_call, R.id.bt_java_js, R.id.bt_deeplink})
+    @OnClick({R.id.bt_baidu, R.id.bt_upload_photo, R.id.bt_movie, R.id.bt_movie_full, R.id.bt_call, R.id.bt_java_js, R.id.bt_deeplink, R.id.bt_game})
     public void onViewClicked(View view) {
         switch (view.getId()) {
+            case R.id.bt_game:
+
+                break;
             case R.id.bt_baidu:
                 WebViewActivity.jumpTo(this);
                 break;

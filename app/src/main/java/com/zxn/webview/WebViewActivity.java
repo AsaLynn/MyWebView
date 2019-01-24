@@ -13,7 +13,8 @@ import butterknife.ButterKnife;
  * 带进度条的wevview
  */
 public class WebViewActivity extends AppCompatActivity {
-    private static final String URL_NEWS_FAST = "http://info.superwie.com/";
+//    private static final String URL_NEWS_FAST = "http://info.superwie.com/";
+    private static final String URL_NEWS_FAST = "http://m.3500.com/userinfo/login/340.html";
     @BindView(R.id.wv_loading)
     LoadWebView wvLoading;
 
