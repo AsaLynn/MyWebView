@@ -1,9 +1,11 @@
-package com.zxn.webview;
+package com.zxn.demo;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+
+import com.zxn.webview.LoadWebView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
