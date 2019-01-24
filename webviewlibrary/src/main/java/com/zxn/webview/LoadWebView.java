@@ -13,6 +13,7 @@ import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -21,6 +22,7 @@ import java.util.Map;
 public class LoadWebView extends WebView {
 
     private ProgressBar mProgressBar;
+    private CookieManager mCookieManager;
 
     public LoadWebView(Context context) {
         this(context, null);
@@ -105,7 +107,8 @@ public class LoadWebView extends WebView {
         setWebViewClient(new LoadWebViewClient());
 //        addJavascriptInterface(new JsObject(), "am");
 
-
+        CookieSyncManager.createInstance(getContext());
+        mCookieManager = CookieManager.getInstance();
     }
 
     public void setProgressBarGone() {
@@ -143,12 +146,10 @@ public class LoadWebView extends WebView {
         if (TextUtils.isEmpty(url)) {
             return;
         }
-        CookieSyncManager.createInstance(getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-        cookieManager.removeSessionCookie();
-        cookieManager.removeAllCookie();
-        cookieManager.setCookie(url, cookie);
+        mCookieManager.setAcceptCookie(true);
+        /*cookieManager.removeSessionCookie();
+        mCookieManager.removeAllCookie();*/
+        mCookieManager.setCookie(url, cookie);
         if (Build.VERSION.SDK_INT < 21) {
             CookieSyncManager.getInstance().sync();
         } else {
@@ -156,13 +157,61 @@ public class LoadWebView extends WebView {
         }
     }
 
-    @Override
-    public void loadUrl(String url, Map<String, String> additionalHttpHeaders) {
-        super.loadUrl(url, additionalHttpHeaders);
-    }
-
     public void loadUrlWithCookie(String url, Map<String, String> headers, String cookie) {
         setCookie(url, cookie);
         super.loadUrl(url, headers);
+    }
+
+    @Deprecated
+    public void loadUrl(String url, String aTokenV1, String utoken) {
+        setNormalCookie(url, aTokenV1, utoken);
+        super.loadUrl(url);
+    }
+
+    public void loadUrl(String url, List<String> cookies) {
+        for (String cookie : cookies) {
+            setCookie(url, cookie);
+        }
+        super.loadUrl(url);
+    }
+
+    /**
+     * 设置多个cookie,和添加headers参数.
+     *
+     * @param url
+     * @param headers
+     * @param cookies
+     */
+    public void loadUrl(String url, Map<String, String> headers, List<String> cookies) {
+        for (String cookie : cookies) {
+            setCookie(url, cookie);
+        }
+        super.loadUrl(url, headers);
+    }
+
+    /**
+     * 设置Cookie
+     *
+     * @param htmlUrl
+     * @param
+     */
+    @Deprecated
+    public void setNormalCookie(String htmlUrl, String aTokenV1, String utoken) {
+        if (TextUtils.isEmpty(htmlUrl)) {
+            return;
+        }
+
+        CookieSyncManager.createInstance(getContext());
+        CookieManager cookieManager = CookieManager.getInstance();
+        cookieManager.setAcceptCookie(true);
+
+        cookieManager.setCookie(htmlUrl, "aTokenV1=" + aTokenV1);
+        cookieManager.setCookie(htmlUrl, " utoken=" + utoken);
+        if (Build.VERSION.SDK_INT < 21) {
+            CookieSyncManager.getInstance().sync();
+        } else {
+            CookieManager.getInstance().flush();
+        }
+
     }
 }
