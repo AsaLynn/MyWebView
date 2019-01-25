@@ -158,17 +158,32 @@ public class LoadWebView extends WebView {
         }
     }
 
+    /**
+     * 设置ookie
+     * @param url
+     * @param cookie
+     */
+    public void loadUrlWithCookie(String url, String cookie) {
+        setCookie(url, cookie);
+        super.loadUrl(url);
+    }
+
+    /**
+     * 设置单个cookie,和headers
+     * @param url
+     * @param headers
+     * @param cookie
+     */
     public void loadUrlWithCookie(String url, Map<String, String> headers, String cookie) {
         setCookie(url, cookie);
         super.loadUrl(url, headers);
     }
 
-    @Deprecated
-    public void loadUrl(String url, String aTokenV1, String utoken) {
-        setNormalCookie(url, aTokenV1, utoken);
-        super.loadUrl(url);
-    }
-
+    /**
+     * 设置多个cookie
+     * @param url
+     * @param cookies
+     */
     public void loadUrl(String url, List<String> cookies) {
         for (String cookie : cookies) {
             setCookie(url, cookie);
@@ -188,31 +203,5 @@ public class LoadWebView extends WebView {
             setCookie(url, cookie);
         }
         super.loadUrl(url, headers);
-    }
-
-    /**
-     * 设置Cookie
-     *
-     * @param htmlUrl
-     * @param
-     */
-    @Deprecated
-    public void setNormalCookie(String htmlUrl, String aTokenV1, String utoken) {
-        if (TextUtils.isEmpty(htmlUrl)) {
-            return;
-        }
-
-        CookieSyncManager.createInstance(getContext());
-        CookieManager cookieManager = CookieManager.getInstance();
-        cookieManager.setAcceptCookie(true);
-
-        cookieManager.setCookie(htmlUrl, "aTokenV1=" + aTokenV1);
-        cookieManager.setCookie(htmlUrl, " utoken=" + utoken);
-        if (Build.VERSION.SDK_INT < 21) {
-            CookieSyncManager.getInstance().sync();
-        } else {
-            CookieManager.getInstance().flush();
-        }
-
     }
 }

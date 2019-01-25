@@ -1,18 +1,14 @@
-apply plugin: 'com.novoda.bintray-release'//添加bintray插件
 apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
 android {
     compileSdkVersion 28
-
-
-
     defaultConfig {
         minSdkVersion 16
         targetSdkVersion 28
         versionCode 1
         versionName "1.0.1"
-
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -25,149 +21,112 @@ android {
         //checkReleaseBuilds false
         abortOnError false
     }
-
 }
-/*configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion '28.0.0'
-            }
-        }
-    }
-}*/
 dependencies {
 //    implementation fileTree(dir: 'libs', include: ['*.jar'])
-
 //    implementation 'com.android.support:appcompat-v7:28.0.0'
 //    testImplementation 'junit:junit:4.12'
 //    androidTestImplementation 'com.android.support.test:runner:1.0.2'
 //    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-
 }
-
-/*configurations.all {
-    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-        def requested = details.requested
-        if (requested.group == 'com.android.support') {
-            if (!requested.name.startsWith("multidex")) {
-                details.useVersion '28.0.0'
+//项目主页
+def siteUrl = 'https://github.com/zhang721688/MyWebView'
+//项目的git地址
+def gitUrl = 'https://github.com/zhang721688/MyWebView.git'
+//发布到JCenter上的项目名字
+def libName = "LoadWebView"
+//发布到组织名称名字，必须填写
+group = "com.zxn.webview"
+// 版本号，下次更新是只需要更改版本号即可
+version = "1.0.0"
+//上面配置后上传至JCenter后的编译路径是这样的： compile 'com.zxn.webview.LoadWebView:library:1.0.0'
+//生成源文件
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+//生成Javadoc文档
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+}
+//文档打包成jar
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+//拷贝javadoc文件
+task copyDoc(type: Copy) {
+    from "${buildDir}/docs/"
+    into "docs"
+}
+//上传到JCenter所需要的源码文件
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+// 配置maven库，生成POM.xml文件
+install {
+    repositories.mavenInstaller {
+        // This generates POM.xml with proper parameters
+        pom {
+            project {
+                packaging 'aar'
+                //项目描述，随意填
+                name 'A loading webview for load h5.'
+                url siteUrl
+                licenses {
+                    license {
+                        //开源协议
+                        name 'The Apache Software License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                developers {
+                    developer {
+                        //开发者的个人信息
+                        id 'zxn'
+                        name 'ZhangXiaoNing'
+                        email 'zxn13716071676@sina.com'
+                    }
+                }
+                scm {
+                    connection gitUrl
+                    developerConnection gitUrl
+                    url siteUrl
+                }
             }
         }
     }
-}*/
-//apply plugin: 'com.github.dcendents.android-maven'
-//apply plugin: 'com.jfrog.bintray'
-//version = "1.0.0"    //版本号，以后每次更新library都得更改
-//def siteUrl = 'https://github.com/zhang721688'    //Homepage URL of the library
-//def gitUrl = 'https://github.com/zhang721688/MyWebView.git'    //Git repository url
-//def issueUrl = 'https://github.com/zhang721688/issues'    //issue url of the library
-//def linksUrl = 'https://github.com/zhang721688/wiki'//links url of the
-
-/*=====(路径可以是假的)======*/
-//group = "com.hongyelinggu"    //组织
-//install {
-//    repositories.mavenInstaller {
-//        // This generates POM.xml with proper parameters
-//        pom {
-//            project {
-//                packaging 'aar'
-//                // Add your description here
-//                name '介绍'
-//                url siteUrl
-//                // Set your license
-//                licenses {
-//                    license {
-//                        name 'The Apache Software License, Version 2.0'
-//                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-//                    }
-//                }
-//                developers {
-//                    developer {
-//                        id '******' //your user ID
-//                        name '******' //your name
-//                        email '******' //your email
-//                    }
-//                }
-//                scm {
-//                    connection gitUrl
-//                    developerConnection gitUrl
-//                    url siteUrl
-//                }
-//            }
-//        }
-//    }
-//}
-////生成源文件
-//task sourcesJar(type: Jar) {
-//    from android.sourceSets.main.java.srcDirs
-//    classifier = 'sources'
-//}
-//生成文档
-//task javadoc(type: Javadoc) {
-//    source = android.sourceSets.main.java.srcDirs
-//    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-//    options.encoding "UTF-8"
-//    options.charSet 'UTF-8'
-//    options.author true
-//    options.version true
-//    options.links linksUrl
-//    failOnError false
-//}
-////文档打包成jar
-//task javadocJar(type: Jar, dependsOn: javadoc) {
-//    classifier = 'javadoc'
-//    from javadoc.destinationDir
-//}
-////拷贝javadoc文件
-//task copyDoc(type: Copy) {
-//    from "${buildDir}/docs/"
-//    into "docs"
-//}
-
-////上传到jcenter所需要的源码文件
-//artifacts {
-//    archives javadocJar
-//    archives sourcesJar
-//}
-//Properties properties = new Properties()
-//properties.load(project.rootProject.file('local.properties').newDataInputStream())
-//bintray {
-//    user = properties.getProperty("bintray.user")
-//    key = properties.getProperty("bintray.apikey")
-//    configurations = ['archives']
-//    pkg {
-//        repo = "MyWebView"    //发布到Bintray的哪个仓库
-//        name = "webviewlibrary"    //发布到Bintray上的名字
-//        desc = "A library to add tag for MyWebView."    //项目描述
-//        websiteUrl = siteUrl
-//        vcsUrl = gitUrl
-//        issueTrackerUrl = issueUrl
-//        licenses = ["Apache-2.0"]
-//        labels = ['android']    //标签
-//        publish = true
-//        publicDownloadNumbers = true
-//    }
-//}
-
-////添加配置
-publish {
-    userOrg = 'zhang721688'      //bintray注册的用户名
-    repoName = 'MyWebView'//Binary上的刚才新建的仓库名（Repository）
-    groupId = 'com.zxn.webview'         //compile引用时的第1部分groupId
-    artifactId = 'webviewlibrary'     //compile引用时的第2部分项目名, // 依赖名compile 'x:y:z'中的项目名y
-    publishVersion = '1.0.0'    //compile引用时的第3部分版本号,依赖名compile 'x:y:z'中的版本号z
-    desc = 'This is a library for WebView'
-    website = 'https://bintray.com/zhang721688/MyWebView'// VCS地址，即填写项目上传的Github地址
+}
+//上传到JCenter
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+bintray {
+    user = properties.getProperty("bintray.user")    //读取 local.properties 文件里面的 bintray.user
+    key = properties.getProperty("bintray.apikey")   //读取 local.properties 文件里面的 bintray.apikey
+    configurations = ['archives']
+    pkg {
+        //这里的repo值必须要和你创建Maven仓库的时候的名字一样
+        repo = "MyWebView"
+        //发布到JCenter上的项目名字
+        name = libName
+        //项目描述
+        desc = 'A loading webview for load h5..'
+        websiteUrl = siteUrl
+        vcsUrl = gitUrl
+        licenses = ["Apache-2.0"]
+        publish = true
+    }
 }
 
-
-
-
-
-/*tasks.withType(Javadoc) {//防止编码问题
-    options.addStringOption('Xdoclint:none', '-quiet')
-    options.addStringOption('encoding', 'UTF-8')
-    options.addStringOption('charSet', 'UTF-8')
-}*/
+javadoc {
+    options{
+        //如果你的项目里面有中文注释的话，必须将格式设置为UTF-8，不然会出现乱码
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/7/docs/api"
+    }
+}
