@@ -1,7 +1,7 @@
 package com.zxn.demo;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
@@ -42,7 +42,6 @@ public class MainActivity extends AppCompatActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.bt_game:
-
                 break;
             case R.id.bt_baidu:
                 WebViewActivity.jumpTo(this);
